@@ -7,9 +7,9 @@ Our evaluation with silesia dataset shows that DPZipSim can deliver a compressio
 
 # Execution
 
-$python3 dpzip\_sim.py dpzip\_sim dataset.bin
+$python3 dpzip\_sim.py dpzip dataset.bin
 
-Note: User can replace the dpzip\_sim parameter to zstd, gzip, lz4 for comparison
+Note: User can replace the dpzip parameter to zstd, gzip, lz4 for comparison
 
 # Sample Output
 

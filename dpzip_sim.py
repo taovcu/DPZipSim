@@ -89,7 +89,7 @@ def compress_bytes(compressor, direction, cmp_level, byte_content):
         if direction == 1:
             ret = gzip.decompress(byte_content)
 
-    if compressor in ['zstd', 'dpzip_sim']:
+    if compressor in ['zstd', 'dpzip']:
         if not direction:
             if cmp_level:
                 ret = zstd.compress(byte_content, cmp_level, 1)
@@ -98,7 +98,7 @@ def compress_bytes(compressor, direction, cmp_level, byte_content):
 
             if compressor == 'zstd':
                 compressed_size.append(len(ret))
-            if compressor == 'dpzip_sim':
+            if compressor == 'dpzip':
                 compressed_size.append(zstd2dpzip_size_ratio(len(ret)))
 
         if direction == 1:
@@ -164,7 +164,7 @@ def compress_in_mem_chunks(compressor, direction, cmp_level, f_name, chunk_kB, h
 def do_compress():
     global chunk_kb
     parser = argparse.ArgumentParser()
-    parser.add_argument("compressor", type=str, choices=['gzip', 'zstd', 'lz4', 'dpzip_sim'],
+    parser.add_argument("compressor", type=str, choices=['gzip', 'zstd', 'lz4', 'dpzip'],
                         help="choose the compressor")
     parser.add_argument("input_file_path", type=str,
                         help="the input file path must be specified")
