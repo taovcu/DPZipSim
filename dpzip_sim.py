@@ -119,14 +119,24 @@ def compress_bytes(compressor, direction, cmp_level, byte_content):
 
 def print_compress_metrics(compressed_size_list):
     print("Total compressed bytes: {}".format(sum(compressed_size_list)))
-    print("Percetile compressed file size:\t1\t10\t20\t30\t40\t50\t60\t70\t80\t90\t95\t99\t99.9")
-    print("                               \t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}\t{:.0f}".format(np.percentile(compressed_size_list, 1), np.percentile(compressed_size_list, 10),
+    print("Percetile compressed file size:\n\t1,\t10,\t20,\t30,\t40,\t50,\t60,\t70,\t80,\t90,\t99")
+    #print("                               ,\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f}".format(np.percentile(compressed_size_list, 1), np.percentile(compressed_size_list, 10),
+    print("\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f},\t{:.0f}".format(np.percentile(compressed_size_list, 1), np.percentile(compressed_size_list, 10),
             np.percentile(compressed_size_list, 20), np.percentile(compressed_size_list, 30), np.percentile(compressed_size_list, 40), np.percentile(compressed_size_list, 50),
             np.percentile(compressed_size_list, 60), np.percentile(compressed_size_list, 70), np.percentile(compressed_size_list, 80), np.percentile(compressed_size_list, 90),
-            np.percentile(compressed_size_list, 95), np.percentile(compressed_size_list, 99), np.percentile(compressed_size_list, 99.9)
+            #np.percentile(compressed_size_list, 95), np.percentile(compressed_size_list, 99), 
+            np.percentile(compressed_size_list, 99)
         ))
     print("Average compression ratio: {:.2f}".format(len(compressed_size_list)*chunk_kb*1024 / sum(compressed_size_list)))
 
+def read_in_chunks(file_object, chunk_size=1024*1024*1024):
+    """Lazy function (generator) to read a file piece by piece.
+    Default chunk size: 1GB."""
+    while True:
+        data = file_object.read(chunk_size)
+        if not data:
+            break
+        yield data
 
 def compress_in_mem_chunks(compressor, direction, cmp_level, f_name, chunk_kB, hw_granularity, m_distance):
     chunk_cmp_ratio_list = []
