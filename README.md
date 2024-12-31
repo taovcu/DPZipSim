@@ -5,9 +5,13 @@ DPZipSim employs Zstd to conduct compression on the candidate dataset and adjust
 between Zstd and DPZip to accurately simulate the compression ratio of the hardware compressor. 
 Our evaluation with silesia dataset shows that DPZipSim can deliver a compression ratio simulation accuracy of 98.7%. 
 
-# Execution
+# Execution from python source
 
 $python3 dpzip\_sim.py dpzip dataset.bin
+
+# Execution from linux executable file
+
+./dist/dpzip_sim dpzip dataset.bin
 
 Note: User can replace the dpzip parameter to zstd, gzip, lz4 for comparison
 
