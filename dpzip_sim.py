@@ -5,6 +5,7 @@ import time
 import gzip
 import zstd
 import lz4.frame
+
 import numpy as np
 
 compressed_size = []
@@ -30,6 +31,15 @@ def chunk_file_in_bytes(filename, chunk_kB):
             return [file_bytes]
         splitsize = chunk_kB * 1024
         return [file_bytes[i * splitsize:(i + 1) * splitsize] for i in range((filesize + splitsize - 1) // splitsize)] 
+
+def chunk_mem_in_bytes(data_content, chunk_kB):
+    ret = []
+    datasize=len(data_content)
+    if not chunk_kB:
+        return [data_content]
+    splitsize = chunk_kB * 1024
+    n_splits = (datasize + splitsize - 1)//splitsize
+    return [data_content[i * splitsize:(i + 1) * splitsize] for i in range(n_splits)]
 
 def zstd2dpzip_size_ratio(s):
     if s <= 380:
@@ -64,6 +74,14 @@ def compress_bytes(compressor, direction, cmp_level, byte_content):
             compressed_size.append(len(ret))
         else:
             ret = gzip.decompress(byte_content)
+
+    elif compressor == 'snappy':
+        if not direction:
+            ret = snappy.compress(byte_content)
+            compressed_size.append(len(ret))
+        else:
+            ret = snappy.uncompress(byte_content)
+
 
     elif compressor in ['zstd', 'dpzip']:
         if not direction:
@@ -103,7 +121,7 @@ def compress_in_mem_chunks(compressor, direction, cmp_level, f_name, chunk_kB):
     else:
         with open(f_name, 'rb') as f:
             for piece in read_in_chunks(f):
-                byte_chunk_list = chunk_file_in_bytes(piece, chunk_kB)
+                byte_chunk_list = chunk_mem_in_bytes(piece, chunk_kB)
                 for chunk in byte_chunk_list:
                     _, _, _ = compress_bytes(compressor, direction, cmp_level, chunk)
 
